@@ -8,14 +8,16 @@ datasource db {
 }
 
 model users {
-  user_id          Int              @id(map: "PK__users__B9BE370FA53A1165") @default(autoincrement())
-  user_email       String           @unique(map: "UQ__users__B0FBA21264DF8BF0") @db.NVarChar(255)
-  user_password    String           @db.VarChar(255)
-  user_active      Boolean          @default(true, map: "DF__users__user_acti__38996AB5")
-  user_createdat   DateTime         @default(now(), map: "DF__users__user_crea__398D8EEE")
-  user_updateat    DateTime         @default(now(), map: "DF__users__user_upda__3A81B327")
-  user_lastloginat DateTime?
-  users_sessions   users_sessions[]
+  user_id                Int                     @id(map: "PK__users__B9BE370FA53A1165") @default(autoincrement())
+  user_email             String                  @unique(map: "UQ__users__B0FBA21264DF8BF0") @db.NVarChar(255)
+  user_password          String                  @db.VarChar(255)
+  user_active            Boolean                 @default(true, map: "DF__users__user_acti__38996AB5")
+  user_createdat         DateTime                @default(now(), map: "DF__users__user_crea__398D8EEE")
+  user_updateat          DateTime                @default(now(), map: "DF__users__user_upda__3A81B327")
+  user_lastloginat       DateTime?
+  users_details_profiles users_details_profiles?
+  recovery_tokens        users_recovery_tokens[]
+  users_sessions         users_sessions[]
 
   @@index([user_active], map: "IX_users_active")
   @@index([user_email], map: "IX_users_email")
@@ -37,4 +39,40 @@ model users_sessions {
   @@index([session_active, session_expiresat], map: "IX_sessions_active_expires")
   @@index([session_expiresat], map: "IX_sessions_expiresat")
   @@index([user_id], map: "IX_sessions_user_id")
+}
+
+model users_recovery_tokens {
+  token_id        Int      @id(map: "PK__users_recovery__CB3C9E27FE7A61F0") @default(autoincrement())
+  user_id         Int
+  token_pin       String   @db.VarChar(6)
+  token_hash      String   @db.VarChar(128)
+  token_createdat DateTime @default(now(), map: "DF__users_recovery__token_crea__5DCAEF64")
+  token_expiresat DateTime
+  token_active    Boolean  @default(true, map: "DF__users_recovery__token_acti__5EBF139D")
+  users           users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_recovery_users")
+
+  @@index([token_active], map: "IX_recovery_active")
+  @@index([token_expiresat], map: "IX_recovery_expiresat")
+  @@index([user_id], map: "IX_recovery_user_id")
+  @@index([token_hash], map: "IX_recovery_hash")
+}
+
+model users_details_profiles {
+  profile_id         Int      @id(map: "PK__users_profiles__87C73007F123456F") @default(autoincrement())
+  user_id            Int      @unique(map: "UQ_users_profiles_user_id")
+  profile_gender     String   @default("neutre", map: "DF__users_profiles__gender__6FE99F9F") @db.VarChar(10)
+  profile_lastname   String?  @db.VarChar(100)
+  profile_firstname  String?  @db.VarChar(100)
+  profile_phone      String?  @db.VarChar(20)
+  profile_mobile     String?  @db.VarChar(20)
+  profile_language   String   @default("fr", map: "DF__users_profiles__language__70DDC3D8") @db.VarChar(2)
+  profile_active     Boolean  @default(true, map: "DF__users_profiles__active__71D1E811")
+  profile_lastupdate DateTime @default(now(), map: "DF__users_profiles__lastupdate__72C60C4A")
+  users              users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_profiles_users")
+
+  @@index([profile_active], map: "IX_profiles_active")
+  @@index([profile_firstname], map: "IX_profiles_firstname")
+  @@index([profile_lastname], map: "IX_profiles_lastname")
+  @@index([profile_lastupdate], map: "IX_profiles_lastupdate")
+  @@index([user_id], map: "IX_profiles_user_id")
 }

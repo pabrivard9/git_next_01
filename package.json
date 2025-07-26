@@ -5,10 +5,29 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:mobile": "BUILD_MOBILE=true next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cap:init": "npx cap init",
+    "cap:add:android": "npx cap add android",
+    "cap:add:ios": "npx cap add ios",
+    "cap:build": "npm run build:mobile && npx cap sync",
+    "cap:sync": "npx cap sync",
+    "cap:android": "npm run cap:build && npx cap open android",
+    "cap:ios": "npm run cap:build && npx cap open ios",
+    "cap:run:android": "npm run cap:build && npx cap run android",
+    "cap:run:ios": "npm run cap:build && npx cap run ios",
+    "cap:clean": "npx cap clean",
+    "cap:update": "npx cap update"
   },
   "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
     "@chakra-ui/next-js": "^2.4.2",
     "@chakra-ui/react": "^3.22.0",
     "@emotion/react": "^11.14.0",
@@ -19,9 +38,11 @@
     "lucide-react": "^0.525.0",
     "next": "15.4.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "resend": "^4.0.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
     "@eslint/eslintrc": "^3",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",

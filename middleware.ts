@@ -17,6 +17,7 @@ const PROTECTED_ROUTES = [
 // Public routes (not requiring authentication)
 const PUBLIC_ROUTES = [
     '/auth/login',
+    '/auth/recovery',
     '/auth/forgot-password'
 ]
 
@@ -24,7 +25,8 @@ const PUBLIC_ROUTES = [
 const API_ROUTES_EXCLUDED = [
     '/api/auth/login',
     '/api/auth/logout',
-    '/api/auth/me'
+    '/api/auth/me',
+    '/api/auth/recovery'
 ]
 
 // Check if the session is valid
@@ -78,7 +80,7 @@ function isExcludedApiRoute(pathname: string): boolean {
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
 
-    // Exclure les fichiers statiques et certaines routes
+    // Exclude static files and specific paths from middleware processing
     if (
         pathname.startsWith('/_next') ||
         pathname.startsWith('/favicon.ico') ||
@@ -129,7 +131,6 @@ export async function middleware(request: NextRequest) {
 // Routes config for the middleware
 export const config = {
     matcher: [
-        // Correspond à tous les chemins sauf :
         '/((?!_next/static|_next/image|favicon.ico).*)',
     ],
 }

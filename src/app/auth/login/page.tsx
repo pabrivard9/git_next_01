@@ -15,8 +15,11 @@ import {
     Alert
 } from '@chakra-ui/react'
 import { Eye, EyeOff, ArrowRight, FileCode, Loader2 } from 'lucide-react'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation' // ✅ Correction ici !
+import Link from 'next/link'
+import AuthFooter from '@/components/AuthFooter'
+import { useTranslation } from '@/lib/i18n'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -25,8 +28,16 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
+    const [isMounted, setIsMounted] = useState(false)
 
     const router = useRouter()
+    const { t } = useTranslation('auth')
+    const { t: tCommon } = useTranslation('common')
+
+    // S'assurer que le composant est monté côté client
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -46,21 +57,34 @@ export default function LoginPage() {
             const data = await response.json()
 
             if (response.ok) {
-                setSuccess('Connexion réussie ! Redirection...')
+                setSuccess(t('login.success'))
                 console.log('Utilisateur connecté:', data.user)
-
-                // TODO: Stocker les données de session ici
-                // localStorage.setItem('user', JSON.stringify(data.user))
 
                 // Redirection vers la page d'accueil après 1 seconde
                 setTimeout(() => {
-                    router.push('/')
+                    if (isMounted) {
+                        router.push('/')
+                    } else {
+                        // Fallback si le router n'est pas encore disponible
+                        window.location.href = '/'
+                    }
                 }, 1000)
             } else {
-                setError(data.error || 'Erreur de connexion')
+                // Gestion des erreurs avec traductions
+                let errorMessage = t('errors.serverError')
+                if (data.error) {
+                    if (data.error.includes('Email incorrect') || data.error.includes('Mot de passe incorrect')) {
+                        errorMessage = t('errors.invalidCredentials')
+                    } else if (data.error.includes('désactivé')) {
+                        errorMessage = data.error // Garder le message original pour les cas spéciaux
+                    } else {
+                        errorMessage = t('errors.serverError')
+                    }
+                }
+                setError(errorMessage)
             }
         } catch (err) {
-            setError('Erreur de connexion au serveur')
+            setError(t('errors.networkError'))
             console.error('Erreur:', err)
         } finally {
             setIsLoading(false)
@@ -69,6 +93,15 @@ export default function LoginPage() {
 
     const togglePassword = () => {
         setShowPassword(!showPassword)
+    }
+
+    // Afficher un loader pendant l'hydratation
+    if (!isMounted) {
+        return (
+            <Flex minH="100vh" align="center" justify="center" bg="gray.50">
+                <Text>Chargement...</Text>
+            </Flex>
+        )
     }
 
     return (
@@ -97,20 +130,20 @@ export default function LoginPage() {
                             <Stack gap={6}>
                                 {/* Title */}
                                 <Heading size="2xl" fontFamily="Inter" fontWeight="bold" textAlign="center" mb={2}>
-                                    <Text color="blue.800">Se connecter</Text>
+                                    <Text color="blue.800">{t('login.title')}</Text>
                                 </Heading>
 
                                 {/* Alerts */}
                                 {error && (
                                     <Alert.Root status="error" variant="surface">
-                                        <Alert.Title>Erreur</Alert.Title>
+                                        <Alert.Title>{tCommon('app.error')}</Alert.Title>
                                         <Alert.Description>{error}</Alert.Description>
                                     </Alert.Root>
                                 )}
 
                                 {success && (
                                     <Alert.Root status="success" variant="surface">
-                                        <Alert.Title>Succès</Alert.Title>
+                                        <Alert.Title>{tCommon('app.success')}</Alert.Title>
                                         <Alert.Description>{success}</Alert.Description>
                                     </Alert.Root>
                                 )}
@@ -119,7 +152,7 @@ export default function LoginPage() {
                                 <Box>
                                     <Field.Root required>
                                         <Field.Label mb={0} fontFamily="Inter" textStyle="md" color="gray.700">
-                                            Email <Field.RequiredIndicator />
+                                            {t('login.email')} <Field.RequiredIndicator />
                                         </Field.Label>
                                         <Input
                                             type="email"
@@ -139,7 +172,7 @@ export default function LoginPage() {
                                 <Box position="relative">
                                     <Field.Root required>
                                         <Field.Label mb={0} fontFamily="Inter" textStyle="md" color="gray.700">
-                                            Mot de passe <Field.RequiredIndicator />
+                                            {t('login.password')} <Field.RequiredIndicator />
                                         </Field.Label>
                                         <Input
                                             type={showPassword ? 'text' : 'password'}
@@ -189,11 +222,11 @@ export default function LoginPage() {
                                         {isLoading ? (
                                             <>
                                                 <Loader2 className="animate-spin" size={16} />
-                                                Connexion...
+                                                {tCommon('app.loading')}
                                             </>
                                         ) : (
                                             <>
-                                                Se connecter
+                                                {t('login.submit')}
                                                 <ArrowRight />
                                             </>
                                         )}
@@ -202,13 +235,28 @@ export default function LoginPage() {
 
                                 {/* Password recovery */}
                                 <Text textAlign="center" color="gray.600" fontSize="sm">
-                                    <Text as="span" color="blue.800" cursor="pointer" _hover={{ textDecoration: "underline" }}>
-                                        Mot de passe oublié ?
-                                    </Text>
+                                    <Link href="/auth/recovery">
+                                        <Text as="span" color="blue.800" cursor="pointer" _hover={{ textDecoration: "underline" }}>
+                                            {t('login.forgotPassword')}
+                                        </Text>
+                                    </Link>
+                                </Text>
+
+                                {/* Sign up link */}
+                                <Text textAlign="center" color="gray.600" fontSize="sm" pt={4} borderTop="1px" borderColor="gray.200">
+                                    {t('login.noAccount')}{' '}
+                                    <Link href="/auth/signup">
+                                        <Text as="span" color="blue.800" cursor="pointer" _hover={{ textDecoration: "underline" }} fontWeight="semibold">
+                                            {t('login.signUp')}
+                                        </Text>
+                                    </Link>
                                 </Text>
                             </Stack>
                         </form>
                     </Box>
+
+                    {/* Footer with legal links */}
+                    <AuthFooter />
                 </VStack>
             </Container>
         </Flex>

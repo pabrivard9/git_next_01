@@ -1,0 +1,36 @@
+{
+  "legalNotice": {
+    "title": "Mentions légales",
+    "content": "Contenu des mentions légales à remplir...",
+    "sections": {
+      "editor": "Éditeur du site",
+      "hosting": "Hébergement",
+      "intellectual": "Propriété intellectuelle",
+      "contact": "Contact"
+    }
+  },
+  "terms": {
+    "title": "Conditions générales d'utilisation",
+    "content": "Contenu des conditions générales à remplir...", 
+    "sections": {
+      "scope": "Objet et champ d'application",
+      "acceptance": "Acceptation des conditions",
+      "services": "Services proposés",
+      "responsibilities": "Responsabilités",
+      "duration": "Durée et résiliation"
+    }
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "content": "Contenu de la politique de confidentialité à remplir...",
+    "sections": {
+      "collection": "Collecte des données",
+      "usage": "Utilisation des données",
+      "sharing": "Partage des données",
+      "rights": "Vos droits",
+      "cookies": "Cookies",
+      "dpo": "Contact DPO"
+    }
+  },
+  "placeholder": "📝 Ce contenu sera complété ultérieurement avec les informations légales détaillées."
+}

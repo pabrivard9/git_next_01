@@ -1,0 +1,36 @@
+{
+  "legalNotice": {
+    "title": "Legal Notice",
+    "content": "Legal notice content to be filled...",
+    "sections": {
+      "editor": "Site Editor",
+      "hosting": "Hosting",
+      "intellectual": "Intellectual Property",
+      "contact": "Contact"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "content": "Terms of service content to be filled...",
+    "sections": {
+      "scope": "Scope and Application",
+      "acceptance": "Acceptance of Terms",
+      "services": "Services Offered",
+      "responsibilities": "Responsibilities",
+      "duration": "Duration and Termination"
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "content": "Privacy policy content to be filled...",
+    "sections": {
+      "collection": "Data Collection",
+      "usage": "Data Usage",
+      "sharing": "Data Sharing",
+      "rights": "Your Rights",
+      "cookies": "Cookies",
+      "dpo": "DPO Contact"
+    }
+  },
+  "placeholder": "📝 This content will be completed later with detailed legal information."
+}

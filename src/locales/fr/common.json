@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "dev_next_01",
+    "welcome": "Bienvenue",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "footer": {
+    "copyright": "Tous droits réservés",
+    "legalNotice": "Mentions légales",
+    "terms": "Conditions générales",
+    "privacy": "Politique de confidentialité"
+  }
+}

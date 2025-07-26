@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('Error while connecting:', error)
         return NextResponse.json(
-            { error: 'Server error' },
+            { error: 'Server error x' },
             { status: 500 }
         )
     }
