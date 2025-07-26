@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  user_id          Int              @id(map: "PK__users__B9BE370FA53A1165") @default(autoincrement())
+  user_email       String           @unique(map: "UQ__users__B0FBA21264DF8BF0") @db.NVarChar(255)
+  user_password    String           @db.VarChar(255)
+  user_active      Boolean          @default(true, map: "DF__users__user_acti__38996AB5")
+  user_createdat   DateTime         @default(now(), map: "DF__users__user_crea__398D8EEE")
+  user_updateat    DateTime         @default(now(), map: "DF__users__user_upda__3A81B327")
+  user_lastloginat DateTime?
+  users_sessions   users_sessions[]
+
+  @@index([user_active], map: "IX_users_active")
+  @@index([user_email], map: "IX_users_email")
+}
+
+model users_sessions {
+  session_id        String   @id(map: "PK__users_se__69B13FDC4CB7CFC3") @db.NVarChar(128)
+  user_id           Int
+  session_data      String?  @db.NVarChar(Max)
+  session_createdat DateTime @default(now(), map: "DF__users_ses__sessi__49C3F6B7")
+  session_updatedat DateTime @default(now(), map: "DF__users_ses__sessi__4AB81AF0")
+  session_expiresat DateTime
+  session_ipaddress String?  @db.NVarChar(45)
+  session_useragent String?  @db.NVarChar(500)
+  session_active    Boolean  @default(true, map: "DF__users_ses__sessi__4BAC3F29")
+  users             users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "FK_sessions_users")
+
+  @@index([session_active], map: "IX_sessions_active")
+  @@index([session_active, session_expiresat], map: "IX_sessions_active_expires")
+  @@index([session_expiresat], map: "IX_sessions_expiresat")
+  @@index([user_id], map: "IX_sessions_user_id")
+}
